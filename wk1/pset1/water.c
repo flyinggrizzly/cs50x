@@ -1,3 +1,9 @@
+/**********
+ * A function that demonstrates basic C math.
+ * 
+ * (C) 2016 Sean DMR.
+ **********/
+
 #include <cs50.h>
 #include <stdio.h>
 

@@ -1,3 +1,13 @@
+/**********
+ * Greedy function that counts out minimum number of coins needed to achieve
+ * required change.
+ * 
+ * Demonstrates functional decomposition, and use of modulo-math and division
+ * to avoid repetitive subtraction in loops.
+ * 
+ * (C) 2016 Sean DMR
+ **********/
+
 #include <cs50.h>
 #include <math.h>
 #include <stdio.h>

@@ -1,3 +1,13 @@
+/***********
+ * A function that builds a half pyramid of a height given by the user.
+ * 
+ * Demonstrates functional decomposition, and the use of nested loops to
+ * achieve outputs that vary in multiple ways from a single input. Also
+ * demonstrates tongue-in-cheeck naming conventions.
+ * 
+ * (C) 2016 Sean DMR.
+ ***********/
+
 #include <cs50.h>
 #include <stdio.h>
 
