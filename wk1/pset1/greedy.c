@@ -2,6 +2,7 @@
 #include <math.h>
 #include <stdio.h>
 
+// prototypes
 float CheckChange(float request);
 int CountChange(int cents);
 
@@ -20,17 +21,21 @@ int main(void) {
     
     // start cutting chunks outta cents on a per-coin basis
     int numCoins = CountChange(cents);
-    
     printf("%i\n", numCoins);
+    
     return 0;
 }
 
 
 
+/*****************************
+ * Helper functions 
+ *****************************/
 
-
-// checks requested change for positivity. Returns input if valid, recalls main if invalid
-float CheckChange(float request){
+/***
+ * checks requested change for positivity. Returns input if valid, recalls main if invalid
+*/
+float CheckChange(float request) {
     
     if (request < 0) {
         main();
@@ -53,7 +58,7 @@ int CountChange(int cents) {
     // while we owe more than pennies
     while (cents > 4) {
     
-        //what is the biggest coin we can work with?
+        // we'll need to know the biggest coin we can hand back on each pass...
         int coin;
         
         if (cents > 24) { 

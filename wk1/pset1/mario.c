@@ -1,7 +1,7 @@
 #include <cs50.h>
 #include <stdio.h>
 
-// helper functions
+// prototypes
 int ValidateInput(int input);
 void HebrewSlaves(int height);
 
