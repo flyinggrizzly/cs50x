@@ -1,10 +1,11 @@
 #include <cs50.h>
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 
 // prototypes
-string FindInitials(string name);
-int CountInitials(string name);
+void FindInitials(string name, int numInitials);
+int CountNames(string name);
 
 int main (void) {
     
@@ -12,9 +13,9 @@ int main (void) {
     
     if (name != NULL) {
         
-        string initials = FindInitials(name);
+        int numNames = CountNames(name);
         
-        printf( "%s\n", initials );
+        FindInitials(name, numNames);
         
         return 0;
     }
@@ -23,18 +24,53 @@ int main (void) {
     }
 }
 
-// concatenates capitalized first letters of words from an input string
-string FindInitials(string name) {
+/* Given a number of names, and string containing all of those names,
+ * this function searches for white space followed by an alpha.
+ * It takes this alpha, capitalizes it, and stores it in an array.
+ * Once it has filled the array, it prints the capitalized initials
+ * to the terminal.
+ */
+void FindInitials(string name, int numInitials) {
     
-    // determine how many initials will exist to size an array
-    int numInitials = CountNames(name);
+    // build an array in which to store the initials
+    char initials[numInitials];
     
-    // first char is the letter of the first name
-    if (name[0] != ' ') {
+    // i tracks initials array index, j iterates through the string name
+    for (int i = 0, j = 0; i < numInitials; j++) {
         
+        // first char is the letter of the first name
+        if (name[j] != ' ') {
+            initials[i] = toupper(name[j]);
+            i++;
+            
+            // identify spaces followed by alpha
+            if (isspace(name[j]) && isalpha(name[j + 1])) {
+                initials[i] = toupper(name[j + 1]);
+                i++;
+            }
+            
+        }
+        else {
+            
+            // do same, but first char is a space
+            if (isspace(name[j]) && isalpha(name[j + 1])) {
+                initials[i] = toupper(name[j + 1]);
+                i++;
+            }
+        }
     }
     
+    // print initials to terminal
+    for (int i = 0; i < numInitials; i++) {
+        printf("%c", initials[i]);
+    }
+    // print newline
+    printf("\n");
+
+    
 }
+
+
 
 /* Determines how many initials will exist for a given string name, by 
  * counting spaces trailed by a char (with exception made for the first)
@@ -48,11 +84,19 @@ string FindInitials(string name) {
      // first char could be the first letter of the first name (unless there is an unintentional space, which will be caught by the normal operation of the function)
      if (isalpha(name[0])) {
          count++;
+         
+        // look for spaces followed by chars to identify each name
+            // don't bother checking last char, because there isn't an i + 1
+         for (int i = 0, length = strlen(name); i < length - 1; i++) {
+             if (isspace(name[i]) && isalpha(name[i+1])) {
+                 count++;
+             }
+         }
+         
      }
      else {
-         // look for spaces followed by chars to identify each name
-            // don't bother checking last char, because there isn't an i + 1
-         for (int i = 0, length = strlen(name), i < length - 1, i++) {
+         // do the same, but first char is a space
+         for (int i = 0, length = strlen(name); i < length - 1; i++) {
              if (isspace(name[i]) && isalpha(name[i+1])) {
                  count++;
              }
