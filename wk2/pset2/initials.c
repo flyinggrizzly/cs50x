@@ -41,6 +41,7 @@ void FindInitials(string name, int numInitials) {
         // first char is the letter of the first name
         if (name[j] != ' ') {
             initials[i] = toupper(name[j]);
+            printf(" test %c\n", initials[i]);
             i++;
             
             // identify spaces followed by alpha
