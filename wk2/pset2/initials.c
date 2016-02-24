@@ -34,29 +34,38 @@ void FindInitials(string name, int numInitials) {
     
     // build an array in which to store the initials
     char initials[numInitials];
+    int whichInit = 0;
     
-    // i tracks initials array index, j iterates through the string name
-    for (int i = 0, j = 0; i < numInitials; j++) {
+    // sanity check
+    if (name != NULL) {
         
-        // first char is the letter of the first name
-        if (name[j] != ' ') {
-            initials[i] = toupper(name[j]);
-            printf(" test %c\n", initials[i]);
-            i++;
+        for (int i = 0, l = strlen(name); i <= l; i++) {
             
-            // identify spaces followed by alpha
-            if (isspace(name[j]) && isalpha(name[j + 1])) {
-                initials[i] = toupper(name[j + 1]);
-                i++;
+            // special case for first char in name
+            if (i == 0) {
+                
+                // if first char is an alpha, grab it
+                if (isalpha(name[i])) {
+                    initials[whichInit] = toupper(name[i]);
+                    whichInit++;
+                }
+                // if the first char is a space, check the following. If that is alpha, grab that
+                else if (isspace(name[i])) {
+                    if (isalpha(name[i + 1])) {
+                        initials[whichInit] = toupper(name[i + 1]);
+                        whichInit++;
+                    }
+                }
             }
             
-        }
-        else {
-            
-            // do same, but first char is a space
-            if (isspace(name[j]) && isalpha(name[j + 1])) {
-                initials[i] = toupper(name[j + 1]);
-                i++;
+            // normal procedure searches for a space followed by an alpha on all indexes > 0
+            else if (i > 0 && isspace(name[i])) {
+                
+                // check if the char following a space is alpha
+                if (isalpha(name[i + 1])) {
+                    initials[whichInit] = toupper(name[i + 1]);
+                    whichInit++;
+                }
             }
         }
     }
