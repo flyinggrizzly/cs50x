@@ -14,19 +14,39 @@
 #include <cs50.h>
 
 // prototypes
-int ValidateInput(int argc, string argv[]);
+int ValidateKey(string argv[]);
+void CorrectUserInput(void);
+int IsCounting(int number);
 
 // main
 int main(int argc, string argv[]) {
     
-    // pass inputs through to validator function
-    
-    
-
+    // ensure correct number of arguments
+    if (argc != 2) {
+        CorrectUserInput();
+        return -1;
+    }
+    // real meat of main
+    else {
+        
+        int k = atoi(argv[1]);
+        
+        
+        
+        
+    }
 }
 
+// prompts user to call program with correct inputs and arguments
+void CorrectUserInput() {
+    printf("Usage: ./caesar [key]\n Where [key] is a COUNTING number key.\n");
+}
+
+
+
+
 // validates and returns a key. If error, returns -1.
-int ValidateInput(int argc, string argv[]) {
+int ValidateKey(string argv[]) {
     
     // ensure we receive some value k with which to encrypt
     if (argc != 2) {
