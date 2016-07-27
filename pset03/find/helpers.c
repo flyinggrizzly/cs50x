@@ -12,16 +12,32 @@
 
 #include "helpers.h"
 
-// declare binary search function
-bool binarySearch(int value, int values[], int low, int high);
 
 /**
  * Returns true if value is in array of n values, else false.
  */
 bool search(int value, int values[], int n)
 {
-    int high = n - 1;
-    return binarySearch(value, values, 0, high);
+
+    int lower = 0;
+    int upper = n - 1;
+    
+    while (lower <= upper) {
+        
+        int mid = (lower + upper) /2;
+        
+        if (values[mid] == value) {
+            return true;
+        }
+        else if (values[mid] > value) {
+            upper = mid - 1;
+        }
+        else if (values[mid] < value) {
+            lower = mid + 1;
+        }
+    }
+    
+    return false;
     
     // linear search, kept for future reference
     /* for (int i = 0; i < n; i++) {
@@ -67,38 +83,3 @@ void sort(int values[], int n)
     return;
 }
 
-
-/**
- * performs binary search for a value, in an array values of size n
- */
-bool binarySearch(int value, int values[], int low, int high)  {
-
-    // make sure have an array of size > 1
-    if (low > high)
-        return false;
-    
-    else if (low < high) {
-        
-        //find the midpoint of the array
-        int mid = (low + high) / 2;
-        
-        //check value at midpoint
-        if (values[mid] == value) 
-            return true;
-            
-        // go left...    
-        else if (values[mid] > value)
-            binarySearch(value, values, 0, mid - 1);
-        
-        // ...or go right
-        else if (values[mid] < value)
-            binarySearch(value, values, mid + 1, high);
-        
-        // if we're here, something went seriously wrong
-        else
-            return false;
-    }
-
-    return false;
-
-}
