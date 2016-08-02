@@ -32,7 +32,7 @@ int board[DIM_MAX][DIM_MAX];
 // dimensions
 int d;
 
-// coordinates of empty tile
+// universally scoped array to hold coordinates of empty tile
 int open[2];
 
 // universally scoped array to hold coordinates of user's chosen tile
@@ -198,6 +198,14 @@ void init(void)
                 return;
             }
             
+            // for games where d is even, just record location of open tile
+            else if (even_odd == 1 && tile == 0) {
+                open[0] = row;
+                open[1] = col;
+                
+                return;
+            }
+            
             // each tile decreases in value by the number of tiles that have come before it (calculated by adding tiles previous in current row, to the d * number of rows already completed - tracked by 'row_mod')
             board[row][col] = tile;
             
@@ -350,6 +358,7 @@ bool won(void)
              if (board[i][j] == tile) {
                  tile_coord[0] = i;
                  tile_coord[1] = j;
+                 return;
              }
          }
      }
