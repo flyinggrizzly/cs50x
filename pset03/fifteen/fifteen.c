@@ -32,6 +32,12 @@ int board[DIM_MAX][DIM_MAX];
 // dimensions
 int d;
 
+// coordinates of empty tile
+int open[2];
+
+// universally scoped array to hold coordinates of user's chosen tile
+int tile_coord[2];
+
 // prototypes
 void clear(void);
 void greet(void);
@@ -39,6 +45,8 @@ void init(void);
 void draw(void);
 bool move(int tile);
 bool won(void);
+void tileSearch(int tile);
+bool tileSwap(int tile);
 
 int main(int argc, string argv[])
 {
@@ -107,6 +115,7 @@ int main(int argc, string argv[])
         int tile = GetInt();
         
         // quit if user inputs 0 (for testing)
+        // && TODO remove before submission
         if (tile == 0)
         {
             break;
@@ -159,15 +168,80 @@ void greet(void)
  */
 void init(void)
 {
-    // TODO
+    // set flag to indicate whether d is even or odd in order to adjust tiles 1 and 2 for games where d is even
+    int even_odd = d % 2;
+    
+    // set the highest number on the board
+    int game_of_me = (d * d) - 1;
+    
+    // write each row of the board to array from highest to lowest
+    for (int row = 0; row < d; row++) {
+        
+        int row_mod = row * d;
+        
+        // write each column in i-th row
+        for (int col = 0; col < d; col++) {
+            
+            int tile = game_of_me - row_mod - col;
+            
+            // swap last two tiles for games where d is even; init final three tiles and return
+            if (even_odd == 0 && tile == 2) {
+                
+                board[row][col] = 1;
+                board[row][col + 1] = 2;
+                board[row][col + 2] = 0;
+                
+                // record starting location of empty tile
+                open[0] = row;
+                open[1] = col + 2;
+                
+                return;
+            }
+            
+            // each tile decreases in value by the number of tiles that have come before it (calculated by adding tiles previous in current row, to the d * number of rows already completed - tracked by 'row_mod')
+            board[row][col] = tile;
+            
+        }
+    }
+    
+    return;
 }
+
 
 /**
  * Prints the board in its current state.
  */
 void draw(void)
 {
-    // TODO
+    printf("\n");
+    for (int row = 0; row < d; row++) {
+        for (int col = 0; col < d; col++) {
+            
+            int tile = board[row][col];
+            
+            // if tile is negative, freakout
+            if (tile < 0) {
+                // &&&& TODO implement disco
+                return;
+            }
+            // print tile + 3x space if single digit int
+            else if ( tile > 0 && tile < 10) {
+                printf(" %i    ", tile);
+            }
+            else if (tile == 0) {
+                printf(" #    ");
+            }
+            // print tile + 2x space if double digit int
+            else if (tile > 9 && tile < 100) {
+                printf("%i    ", tile);
+            }
+            else {
+                return;
+            }
+        }
+        
+        printf("\n\n");
+    }
 }
 
 /**
@@ -176,7 +250,49 @@ void draw(void)
  */
 bool move(int tile)
 {
-    // TODO
+    // find coordinates for the user's tile
+    tileSearch(tile);
+    
+    // make sure we don't freak out
+    if (tile_coord[0] != -1 && tile_coord[1] != -1) {
+        
+        // if tile is on same row as open space
+        if (tile_coord[0] == open[0]) {
+            
+            // check if tile directly adjacent to the open space
+            if (tile_coord[1] == open[1] - 1) {
+                return tileSwap(tile);
+            }
+            else if ( tile_coord[1] == open[1] + 1) {
+                return tileSwap(tile);
+            }
+            // if not, invalid move
+            else
+                return false;
+        }
+        // if tile is on row above open space
+        else if (tile_coord[0] == open[0] - 1) {
+            
+            // check if tile is directly above the open space
+            if (tile_coord[1] == open[1]) {
+                return tileSwap(tile);
+            }
+            // if not, invalid move
+            else
+                return false;
+        }
+        // if tile is on row below open space
+        else if (tile_coord[0] == open[0] + 1) {
+            
+            // check if tile is directly below open space
+            if (tile_coord[1] == open[1]) {
+                return tileSwap(tile);
+            }
+            // if not, invalid move
+            else
+                return false;
+        }
+    }
     return false;
 }
 
@@ -186,6 +302,76 @@ bool move(int tile)
  */
 bool won(void)
 {
-    // TODO
+    
+    int board_size = d * d;
+    
+    int expect_tile = 1;
+    
+    // check empty space first--if that's not in the right place, we don't need to check the rest
+    if (board[d - 1][d - 1] != 0) {
+        return false;
+    }
+    
+    // check each tile
+    for (int row = 0; row < d; row++ ) {
+        for (int col = 0; col < d; col++, expect_tile++) {
+            
+            // if we've done this enough times to be looking at the last tile, it should be empty
+            if (expect_tile == board_size) {
+                if (board[row][col] == 0) {
+                    return true;
+                }
+                else
+                    return false;
+            }
+            // general case, checks all tiles except empty space
+            if (board[row][col] != expect_tile) {
+                return false;
+            }
+        }
+    }
     return false;
+}
+
+
+/**
+ * Searches board linearly for user's tile because after the user's first turn 
+ * we cannot assume the board is sorted. Updates
+ * 'tile_coord' variable array. 
+ */
+ void tileSearch(int tile) {
+     
+
+     // search each row of the board
+     for (int i = 0; i < d; i++) {
+         // and check each tile in the columns of that row
+         for (int j = 0; j < d; j++) {
+             
+             if (board[i][j] == tile) {
+                 tile_coord[0] = i;
+                 tile_coord[1] = j;
+             }
+         }
+     }
+     return;
+}
+
+
+/**
+ * Swaps user's chosen tile with the open space. Returns true if successful.
+ */
+bool tileSwap () {
+    
+    // move the tile value into the open space
+    board[open[0]][open[1]] = board[tile_coord[0]][tile_coord[1]];
+    
+    // move the empty space
+    board[tile_coord[0]][tile_coord[1]] = 0;
+    
+    // update location of open space
+    open[0] = tile_coord[0];
+    open[1] = tile_coord[1];
+    
+    return true;
+    
 }
